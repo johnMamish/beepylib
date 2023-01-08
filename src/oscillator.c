@@ -59,6 +59,7 @@ void oscillator_setup_tables()
     }
 }
 
+#if 0
 void print_blip_tables()
 {
     printf("blip_table:\n"
@@ -71,6 +72,7 @@ void print_blip_tables()
     }
     printf("\n");
 }
+#endif
 
 void oscillator_initialize(oscillator_t* osc, int32_t sampling_frequency)
 {
