@@ -47,19 +47,29 @@ int16_t blip_table_q_15[NUM_PHASES][SAMPLES_PER_SINC];
 
 void oscillator_setup_tables()
 {
-    //printf("blip_table:\n"
-    //"----------------------------------------------------------------\n");
     for (int32_t phase = 0; phase < NUM_PHASES; phase++) {
 	for (int32_t i = 0; i < SAMPLES_PER_SINC; i++) {
 	    double t = i - SINC_RADIUS - ((double)phase / ((double)NUM_PHASES));
 	    double val = windowed_sinc(t, SINC_RADIUS);
-	    blip_table_q_15[phase][i] = (int16_t)((val * (double)((1 << blip_table_precision) - 1)) + 0.5);
-
-	    //printf("%6i, ", blip_table_q_15[phase][i]);
+	    int32_t ival = (int32_t)((val * (double)((1 << blip_table_precision) - 1)) + 0.5);
+	    if (ival > 32767) ival = 32767;
+	    if (ival < -32768) ival = -32768;
+	    blip_table_q_15[phase][i] = ival;
 	}
-	//printf("\n");
     }
-    //printf("\n");
+}
+
+void print_blip_tables()
+{
+    printf("blip_table:\n"
+	   "----------------------------------------------------------------\n");
+    for (int32_t phase = 0; phase < NUM_PHASES; phase++) {
+	for (int32_t i = 0; i < SAMPLES_PER_SINC; i++) {
+	    printf("%6i, ", blip_table_q_15[phase][i]);
+	}
+	printf("\n");
+    }
+    printf("\n");
 }
 
 void oscillator_initialize(oscillator_t* osc, int32_t sampling_frequency)
